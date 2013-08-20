@@ -1,11 +1,10 @@
-
 ffi-cdecl
 =========
 
 I made these scripts trying to make the usage of gcc-lua-cdecl more comfortable.
 
-Dependecies
------------
+Dependencies
+------------
 
 * Development headers for the toolchain on which you plan to use the plugin.
 
