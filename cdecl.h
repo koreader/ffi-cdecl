@@ -3,5 +3,7 @@
 #define cdecl_var cdecl_func
 #define cdecl_type(name) name *cdecl_type__ ## name;
 #define cdecl_struct(name) struct name *cdecl_struct__ ## name;
+#define cdecl_enum(name) enum name *cdecl_enum__ ## name;
+#define cdecl_union(name) union name *cdecl_union__ ## name;
 #define cdecl_const(name) __typeof__(name) cdecl_const__ ## name = name;
 #endif
