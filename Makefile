@@ -45,12 +45,12 @@ clean:
 	$(MAKE) -C gcc-lua clean
 
 test: test-ffi-cdecl test-gcc-lua test-gcc-lua-cdecl
-test-ffi-cdecl:
+test-ffi-cdecl: $(PLUGINLIB)
 	./ffi-cdecl $(CROSSCC) test/util.c > test/util.lua
 	./ffi-cdecl $(CROSSCXX) test/sample.cpp > test/sample.lua
 test-gcc-lua: $(PLUGINLIB)
 	$(MAKE) CC=$(CROSSCC) CXX=$(CROSSCXX) -C gcc-lua test
-test-gcc-lua-cdecl:
+test-gcc-lua-cdecl: $(PLUGINLIB)
 	$(MAKE) CC=$(CROSSCC) CXX=$(CROSSCXX) -C gcc-lua-cdecl test
 
 # For detecting the toolchain GCC_VERSION, we preprocess the

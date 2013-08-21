@@ -29,25 +29,9 @@ gcc.register_callback(gcc.PLUGIN_FINISH_UNIT, function()
         if node == decl then return name end
       end) .. ";")
     end
-    local name = orig:match("^cdecl_struct__(.+)")
-    if name then
-      -- get pointee type
-      local type = nodes[i]:type():type()
-      -- output type with API name
-      print(cdecl.declare(type, function(node)
-        if node == type then return name end
-      end) .. ";")
-    end
-    local name = orig:match("^cdecl_enum__(.+)")
-    if name then
-      -- get pointee type
-      local type = nodes[i]:type():type()
-      -- output type with API name
-      print(cdecl.declare(type, function(node)
-        if node == type then return name end
-      end) .. ";")
-    end
-    local name = orig:match("^cdecl_union__(.+)")
+    local name = orig:match("^cdecl_struct__(.+)") or
+        orig:match("^cdecl_enum__(.+)") or
+        orig:match("^cdecl_union__(.+)")
     if name then
       -- get pointee type
       local type = nodes[i]:type():type()
