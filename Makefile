@@ -27,8 +27,8 @@ clean:
 
 test: test-ffi-cdecl test-gcc-lua test-gcc-lua-cdecl
 test-ffi-cdecl: $(PLUGINLIB)
-	./ffi-cdecl "$(CROSSCC)" test/util.c > test/util.lua
-	./ffi-cdecl "$(CROSSCXX)" test/sample.cpp > test/sample.lua
+	./ffi-cdecl "$(CROSSCC)" test/util.c test/util.lua
+	./ffi-cdecl "$(CROSSCXX)" test/sample.cpp test/sample.lua
 test-gcc-lua: $(PLUGINLIB)
 	$(MAKE) CC="$(CROSSCC)" CXX="$(CROSSCXX)" -C gcc-lua test
 test-gcc-lua-cdecl: $(PLUGINLIB)
