@@ -30,9 +30,9 @@ test-ffi-cdecl: $(PLUGINLIB)
 	./ffi-cdecl "$(CROSSCC)" test/util.c test/util.lua
 	./ffi-cdecl "$(CROSSCXX)" test/sample.cpp test/sample.lua
 test-gcc-lua: $(PLUGINLIB)
-	$(MAKE) CC="$(CROSSCC)" CXX="$(CROSSCXX)" -C gcc-lua test
+	$(MAKE) CC="$(CROSSCC)" CXX="$(CROSSCXX)" GCCLUA="../../$(PLUGINLIB)" -C gcc-lua test
 test-gcc-lua-cdecl: $(PLUGINLIB)
-	$(MAKE) CC="$(CROSSCC)" CXX="$(CROSSCXX)" -C gcc-lua-cdecl test
+	$(MAKE) CC="$(CROSSCC)" CXX="$(CROSSCXX)" GCCLUA="../../$(PLUGINLIB)" -C gcc-lua-cdecl test
 
 $(PLUGINLIB): $(GCCVER) $(PLUGIN).c
 	$(MAKE) HOST_CC="$(HOSTCC)" TARGET_CC="$(CROSSCC)" CPPFLAGS="$(PLUGIN_CPPFLAGS)" \
