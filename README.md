@@ -13,7 +13,7 @@ Dependencies
 Building
 --------
 
-Just type `make` to build. The default setup builds the plugin 
+Just type `make` to build. The default setup builds the plugin
 for an `arm-none-linux-gnueabi` toolchain located in `/opt/arm-2012.03`,
 just like the default settings used by the koreader nightly build scripts.
 
@@ -39,14 +39,9 @@ Usage
 
 * See the `test/` directory for examples.
 
-* Run `ffi-cdecl gcc file.c` or `ffi-cdecl g++ file.cpp` to generate a
-  Lua file on the standard output containing a `ffi.cdef` declaring
+* Run `ffi-cdecl gcc file.c output.lua` or `ffi-cdecl g++ file.cpp output.lua`
+  to generate a Lua file containing a `ffi.cdef` declaring
   the desired functions, structs, etc. When using a cross compiler,
    you need to replace `gcc` and `g++` in these commands with the complete
   name of the compiler executable of your toolchain, for example
   `arm-none-linux-gnueabi-gcc` or `arm-none-linux-gnueabi-g++`.
-
-* If you want to output only the raw C declarations, without the Lua
-  boilerplate, add the `-r` option. For example:
-  `ffi-cdecl -r arm-none-linux-gnueabi-gcc file.c`
-

@@ -2,7 +2,9 @@
 #include <unistd.h>
 #include <sys/statvfs.h>
 #include <sys/time.h>
-#include "cdecl.h"
+
+#include "ffi-cdecl.h"
+#include "ffi-cdecl-luajit.h"
 
 cdecl_struct(timeval)
 cdecl_func(gettimeofday)

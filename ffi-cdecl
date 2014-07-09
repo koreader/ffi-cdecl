@@ -1,27 +1,14 @@
 #!/bin/sh
-DIR="`readlink -f "$0"`"
-DIR="`dirname "$DIR"`"
+DIR="$(readlink -f "${0}")"
+DIR="$(dirname "${DIR}")"
 
-if [ $# -lt 2 ]; then
-	echo 'usage: ffi-cdecl [-r] arm-none-linux-gnueabi-gcc file.c'
-	echo '	-r: raw output (no Lua FFI header/tail)'
+if [ $# -lt 3 ]; then
+	echo 'usage: ffi-cdecl arm-none-linux-gnueabi-gcc file.c output_file.lua'
 	exit 1
 fi
 
-RAW=0
-if [ "$1" = "-r" ]; then
-	RAW=1; shift
-fi
+TOOL="${1}"
+INPUT="${2}"
+OUTPUT="${3}"
 
-TOOL="$1"; shift
-
-if [ $RAW -eq 0 ]; then
-	echo 'local ffi = require("ffi")'
-	echo 'ffi.cdef[['
-fi
-
-"$TOOL" -S -o/dev/null -I"$DIR" -fplugin="$DIR/gcc-lua/gcc/gcclua.so" -fplugin-arg-gcclua-script="$DIR/ffi-cdecl.lua" "$@"
-
-if [ $RAW -eq 0 ]; then
-	echo ']]'
-fi
+"${TOOL}" -S "${INPUT}" -I"${DIR}/gcc-lua-cdecl/ffi-cdecl" -fplugin="${DIR}/gcc-lua/gcc/gcclua.so" -fplugin-arg-gcclua-script="${DIR}/ffi-cdecl.lua" -fplugin-arg-gcclua-output="${OUTPUT}"
