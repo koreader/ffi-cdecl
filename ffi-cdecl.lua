@@ -32,7 +32,6 @@ ffi.cdef[[
 ]=], table.concat(result), [=[
 ]]
 
-return ffi.C
 ]=])
   f:close()
 end)
