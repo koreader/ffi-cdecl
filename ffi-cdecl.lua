@@ -31,7 +31,6 @@ local ffi = require("ffi")
 ffi.cdef[[
 ]=], table.concat(result), [=[
 ]]
-
 ]=])
   f:close()
 end)
