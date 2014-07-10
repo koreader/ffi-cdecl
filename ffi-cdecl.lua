@@ -1,5 +1,5 @@
 local script_dir = arg["script"]:gsub("[^/]+$","")
-package.path = script_dir .. "gcc-lua-cdecl/?.lua"
+package.path = script_dir .. "gcc-lua-cdecl/?.lua;" .. package.path
 
 local gcc = require("gcc")
 local cdecl = require("ffi-cdecl/ffi-cdecl")
