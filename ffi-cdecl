@@ -11,4 +11,4 @@ TOOL="${1}"
 INPUT="${2}"
 OUTPUT="${3}"
 
-"${TOOL}" -S "${INPUT}" -I"${DIR}/gcc-lua-cdecl/ffi-cdecl" -fplugin="${DIR}/gcc-lua/gcc/gcclua.so" -fplugin-arg-gcclua-script="${DIR}/ffi-cdecl.lua" -fplugin-arg-gcclua-output="${OUTPUT}"
+"${TOOL}" -S "${INPUT}" ${CPPFLAGS} -I"${DIR}/gcc-lua-cdecl/ffi-cdecl" -fplugin="${DIR}/gcc-lua/gcc/gcclua.so" -fplugin-arg-gcclua-script="${DIR}/ffi-cdecl.lua" -fplugin-arg-gcclua-output="${OUTPUT}"
