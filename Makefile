@@ -15,6 +15,14 @@ CROSSCXX ?= $(CHOST)-g++
 # Workaround for gcc<4.8 on arm (see http://gcc.gnu.org/PR45078)
 FIX_CPPFLAGS ?= -I$(CURDIR)/include
 
+# If the host is x86_64, but the TC is x86, we need to match the bitness of the TC
+ifeq ($(shell uname -m), x86_64)
+	# Ask file to follow symlinks (for Linaro TCs)
+	ifeq ($(shell if file -L `which $(CROSSCC)` | grep -q 32-bit ; then echo 1 ; fi), 1)
+		FIX_CPPFLAGS += -m32
+	endif
+endif
+
 PLUGIN_CPPFLAGS = $(CPPFLAGS) -I$(GCCPLUGIN_DIR) $(FIX_CPPFLAGS)
 
 PLUGIN = gcc-lua/gcc/gcclua
