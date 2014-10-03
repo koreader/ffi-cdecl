@@ -13,7 +13,10 @@ Dependencies
 Building
 --------
 
-Just type `make` to build. The default setup builds the plugin
+First fetch third party dependencies using `git submodule init` and
+`git submodule update`.
+
+THen just type `make` to build. The default setup builds the plugin
 for an `arm-none-linux-gnueabi` toolchain located in `/opt/arm-2012.03`,
 just like the default settings used by the koreader nightly build scripts.
 
@@ -44,4 +47,5 @@ Usage
   the desired functions, structs, etc. When using a cross compiler,
    you need to replace `gcc` and `g++` in these commands with the complete
   name of the compiler executable of your toolchain, for example
-  `arm-none-linux-gnueabi-gcc` or `arm-none-linux-gnueabi-g++`.
+  `arm-none-linux-gnueabi-gcc` or `arm-none-linux-gnueabi-g++`. You can use
+  `CPPFLAGS` environment variable to control build flags.
