@@ -2,8 +2,7 @@
 # which is only used for trying to autolocate GCCPLUGIN_DIR,
 # that is set to the directory containing gcc-plugin.h
 CROSS_DIR ?= /opt/arm-2012.03
-GCCPLUGIN_DIR ?= $(shell find $(CROSS_DIR) -name gcc-plugin.h \
-                   -exec dirname '{}' \;)
+GCCPLUGIN_DIR ?= $(shell find $(CROSS_DIR) -name gcc-plugin.h | head -n 1 | xargs dirname)
 
 # Host CC
 HOSTCC ?= gcc
