@@ -4,7 +4,6 @@
 #include <sys/time.h>
 
 #include "ffi-cdecl.h"
-#include "ffi-cdecl-luajit.h"
 
 cdecl_struct(timeval)
 cdecl_func(gettimeofday)
