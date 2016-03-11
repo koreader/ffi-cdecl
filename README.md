@@ -1,7 +1,11 @@
 ffi-cdecl
 =========
 
-I made these scripts trying to make the usage of gcc-lua-cdecl more comfortable.
+Automated C declarations extraction tool for FFI interfaces.
+
+Currently it only generates lua header files for LuaJIT FFI. That said, it
+should be easy to add python cffi support.
+
 
 Dependencies
 ------------
@@ -9,6 +13,7 @@ Dependencies
 * Development headers for the toolchain on which you plan to use the plugin.
 
 * Any Lua implementation compatible with Lua 5.1.
+
 
 Building
 --------
@@ -37,15 +42,27 @@ which can be used with that toolchain:
 
 Read the Makefile for more details.
 
+
 Usage
 -----
 
-* See the `test/` directory for examples.
+See `test/` directory and [koreader-base][] for examples.
 
-* Run `ffi-cdecl gcc file.c output.lua` or `ffi-cdecl g++ file.cpp output.lua`
-  to generate a Lua file containing a `ffi.cdef` declaring
-  the desired functions, structs, etc. When using a cross compiler,
-   you need to replace `gcc` and `g++` in these commands with the complete
-  name of the compiler executable of your toolchain, for example
-  `arm-none-linux-gnueabi-gcc` or `arm-none-linux-gnueabi-g++`. You can use
-  `CPPFLAGS` environment variable to control build flags.
+When you have the C file ready, run `ffi-cdecl gcc file.c output.lua` or
+`ffi-cdecl g++ file.cpp output.lua` to generate a Lua file containing a
+`ffi.cdef` declaring the desired functions, structs, etc.
+
+When using a cross compiler, you need to replace `gcc` and `g++`
+in these commands with the complete name of the compiler executable of your
+toolchain, for example `arm-none-linux-gnueabi-gcc` or
+`arm-none-linux-gnueabi-g++`.
+
+You can also use `CPPFLAGS` environment variable to control build flags, for
+example:
+
+```
+CPPFLAGS="-I. -LSDL2" ffi-cdecl gcc SDL2_0_decl.c SDL2_0_h.lua
+```
+
+
+[koreader-base]:https://github.com/koreader/koreader-base/tree/master/ffi-cdecl
