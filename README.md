@@ -11,7 +11,7 @@ Dependencies
 ------------
 
 * Development headers for the toolchain on which you plan to use the plugin.
-
+* gcc-plugin (gcc-x.x-plugin-dev package on ubuntu/debian)
 * Any Lua implementation compatible with Lua 5.1.
 
 
