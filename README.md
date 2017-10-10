@@ -21,7 +21,7 @@ Building
 First fetch third party dependencies using `git submodule init` and
 `git submodule update`.
 
-THen just type `make` to build. The default setup builds the plugin
+Then just type `make` to build. The default setup builds the plugin
 for an `arm-none-linux-gnueabi` toolchain located in `/opt/arm-2012.03`,
 just like the default settings used by the koreader nightly build scripts.
 
