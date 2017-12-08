@@ -1,6 +1,6 @@
 [submodule "gcc-lua-cdecl"]
 	path = gcc-lua-cdecl
-	url = http://git.colberg.org/gcc-lua-cdecl.git
+	url = https://git.colberg.org/gcc-lua-cdecl
 [submodule "gcc-lua"]
 	path = gcc-lua
-	url = http://git.colberg.org/gcc-lua.git
+	url = https://git.colberg.org/gcc-lua
