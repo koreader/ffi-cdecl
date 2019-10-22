@@ -42,6 +42,8 @@ gcc.register_callback(gcc.PLUGIN_FINISH_UNIT, function()
     -- Skip the C99 decls
     -- NOTE: Do double-check those, because while this appears to help with size_t,
     --       I've seen complex nested typedefs involving *ptr_t getting mangled instead...
+    -- NOTE: To check for suspicious type conversions, with an x86_64 compiler,
+    --       do a second run w/ -m32 in CPPFLAGS.
     if decl.id == "bool"
     or decl.id == "ptrdiff_t"
     or decl.id == "size_t"
