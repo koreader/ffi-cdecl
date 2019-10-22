@@ -1,15 +1,13 @@
 diff --git a/ffi-cdecl/C99.c b/ffi-cdecl/C99.c
 new file mode 100644
-index 0000000..c4d523e
+index 0000000..1bd5698
 --- /dev/null
 +++ b/ffi-cdecl/C99.c
-@@ -0,0 +1,26 @@
+@@ -0,0 +1,24 @@
 +#include <stdbool.h>
 +#include <stddef.h>
 +#include <stdint.h>
 +#include <stdlib.h>
-+
-+#include "ffi-cdecl.h"
 +
 +// Keep types LuaJIT understands as-is
 +// (c.f., https://luajit.org/ext_ffi_semantics.html)
