@@ -1,15 +1,15 @@
-# CROSS_DIR is the main directory of the toolchain,
-# which is only used for trying to autolocate GCCPLUGIN_DIR,
-# that is set to the directory containing gcc-plugin.h
-CROSS_DIR ?= /opt/arm-2012.03
-GCCPLUGIN_DIR ?= $(shell find $(CROSS_DIR) -name gcc-plugin.h | head -n 1 | xargs dirname)
-
 # Host CC
 HOSTCC ?= gcc
 # Toolchain prefix and gcc/g++ executables
 CHOST ?= arm-none-linux-gnueabi
 CROSSCC  ?= $(CHOST)-gcc
 CROSSCXX ?= $(CHOST)-g++
+
+# CROSS_DIR is the main directory of the toolchain,
+# which is only used for trying to autolocate GCCPLUGIN_DIR,
+# that is set to the directory containing gcc-plugin.h
+CROSS_DIR ?= $(shell dirname `$(CROSSCC) -print-libgcc-file-name`)
+GCCPLUGIN_DIR ?= $(shell find $(CROSS_DIR) -name gcc-plugin.h | head -n 1 | xargs dirname)
 
 # Workaround for gcc<4.8 on arm (see http://gcc.gnu.org/PR45078)
 FIX_CPPFLAGS ?= -I$(CURDIR)/include
@@ -27,9 +27,17 @@ PLUGIN_CPPFLAGS = $(CPPFLAGS) -I$(GCCPLUGIN_DIR) $(FIX_CPPFLAGS)
 PLUGIN = gcc-lua/gcc/gcclua
 PLUGINLIB = $(PLUGIN).so
 
-all: $(PLUGINLIB)
+all: | patch $(PLUGINLIB)
 
-clean:
+patch:
+	patch -d gcc-lua -p1 < gcc-lua-prefer-luajit.patch
+	patch -d gcc-lua-cdecl -p1 < gcc-lua-cdecl-do-not-mangle-c99-types.patch
+
+unpatch:
+	cd gcc-lua && git reset --hard && git clean -fxdq
+	cd gcc-lua-cdecl && git reset --hard && git clean -fxdq
+
+clean: unpatch
 	$(MAKE) -C gcc-lua clean
 
 test: test-ffi-cdecl test-gcc-lua test-gcc-lua-cdecl

@@ -1,0 +1,42 @@
+diff --git a/ffi-cdecl/C99.c b/ffi-cdecl/C99.c
+new file mode 100644
+index 0000000..1bd5698
+--- /dev/null
++++ b/ffi-cdecl/C99.c
+@@ -0,0 +1,24 @@
++#include <stdbool.h>
++#include <stddef.h>
++#include <stdint.h>
++#include <stdlib.h>
++
++// Keep types LuaJIT understands as-is
++// (c.f., https://luajit.org/ext_ffi_semantics.html)
++cdecl_type(bool)
++cdecl_type(ptrdiff_t)
++cdecl_type(size_t)
++cdecl_type(wchar_t)
++cdecl_type(int8_t)
++cdecl_type(int16_t)
++cdecl_type(int32_t)
++cdecl_type(int64_t)
++cdecl_type(uint8_t)
++cdecl_type(uint16_t)
++cdecl_type(uint32_t)
++cdecl_type(uint64_t)
++cdecl_type(intptr_t)
++cdecl_type(uintptr_t)
++// And we can add ssize_t to the list (c.f., src/lj_ctype.c)
++cdecl_type(ssize_t)
++
+diff --git a/ffi-cdecl/ffi-cdecl.h b/ffi-cdecl/ffi-cdecl.h
+index 7cf25d8..288b930 100644
+--- a/ffi-cdecl/ffi-cdecl.h
++++ b/ffi-cdecl/ffi-cdecl.h
+@@ -10,4 +10,7 @@
+ #define cdecl_var                       cdecl_func
+ #define cdecl_const                     cdecl_func
+ 
++// Funky workaround to ensure we'll never mangle C99 types, as well as some from <stddef.h> (mainly, size_t)
++#include "C99.c"
++
+ #endif
