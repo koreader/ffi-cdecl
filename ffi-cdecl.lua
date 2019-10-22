@@ -41,7 +41,7 @@ gcc.register_callback(gcc.PLUGIN_FINISH_UNIT, function()
   for i, decl in ipairs(decls) do
     -- Skip the C99 decls
     -- NOTE: Do double-check those, because while this appears to help with size_t,
-    --       I've seen *ptr_t getting mangled instead...
+    --       I've seen complex nested typedefs involving *ptr_t getting mangled instead...
     if decl.id == "bool"
     or decl.id == "ptrdiff_t"
     or decl.id == "size_t"
