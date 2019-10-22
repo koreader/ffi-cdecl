@@ -27,9 +27,17 @@ PLUGIN_CPPFLAGS = $(CPPFLAGS) -I$(GCCPLUGIN_DIR) $(FIX_CPPFLAGS)
 PLUGIN = gcc-lua/gcc/gcclua
 PLUGINLIB = $(PLUGIN).so
 
-all: $(PLUGINLIB)
+all: | patch $(PLUGINLIB)
 
-clean:
+patch:
+	patch -d gcc-lua -p1 < gcc-lua-prefer-luajit.patch
+	patch -d gcc-lua-cdecl -p1 < gcc-lua-cdecl-do-not-mangle-c99-types.patch
+
+unpatch:
+	cd gcc-lua && git reset --hard && git clean -fxdq
+	cd gcc-lua-cdecl && git reset --hard && git clean -fxdq
+
+clean: unpatch
 	$(MAKE) -C gcc-lua clean
 
 test: test-ffi-cdecl test-gcc-lua test-gcc-lua-cdecl
