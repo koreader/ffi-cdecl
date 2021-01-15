@@ -25,9 +25,15 @@ gcc.register_callback(gcc.PLUGIN_PRE_GENERICIZE, function(node)
 end)
 
 -- Formats the given declaration as a string of C code.
-local function format(decl, id)
+local function format(decl, id, ref)
   if decl:class() == "constant" then
     return "static const int " .. id .. " = " .. decl:value()
+  end
+  if decl:class() == "declaration" and ref then
+    -- If we have an original typedef ref, use it instead of letting GCC resolve it to a canonical type (cdecl_c99_type hack)...
+    -- That's always a typedef, so, just format it like the original and call it a day.
+    -- The callback has already run, so the actual new name made it to the types map, meaning we'll use it in function calls & co.
+    return "typedef " .. ref .. " " .. id
   end
   return cdecl.declare(decl, function(node)
     if node == decl then return id end
@@ -62,14 +68,7 @@ gcc.register_callback(gcc.PLUGIN_FINISH_UNIT, function()
     then
         goto continue
     end
-    -- If we have an original ref, use it instead of the resolved canonical type (cdecl_c99_type hack)...
-    if decl.ref then
-      -- That's always a typedef, so, just format it like the original and call it a day.
-      -- The callback has already run, so the actual new name made it to the types map.
-      table.insert(result, "typedef " .. decl.ref .. " " .. decl.id .. ";\n")
-    else
-      table.insert(result, format(decl.decl, decl.id) .. ";\n")
-    end
+    table.insert(result, format(decl.decl, decl.id, decl.ref) .. ";\n")
     -- That's one janky-ass workaround to the lack of continue keyword (requires LuaJIT/Lua 5.2)...
     ::continue::
   end
