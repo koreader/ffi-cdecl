@@ -15,12 +15,12 @@ local types = {}
 
 -- Parse C declaration from capture macro.
 gcc.register_callback(gcc.PLUGIN_PRE_GENERICIZE, function(node)
-  local decl, id = fficdecl.parse(node)
+  local decl, id, ref = fficdecl.parse(node)
   if decl then
     if decl:class() == "type" or decl:code() == "type_decl" then
       types[decl] = id
     end
-    table.insert(decls, {decl = decl, id = id})
+    table.insert(decls, {decl = decl, id = id, ref = ref})
   end
 end)
 
@@ -62,7 +62,14 @@ gcc.register_callback(gcc.PLUGIN_FINISH_UNIT, function()
     then
         goto continue
     end
-    table.insert(result, format(decl.decl, decl.id) .. ";\n")
+    -- If we have an original ref, use it instead of the resolved canonical type (cdecl_c99_type hack)...
+    if decl.ref then
+      -- That's always a typedef, so, just format it like the original and call it a day.
+      -- The callback has already run, so the actual new name made it to the types map.
+      table.insert(result, "typedef " .. decl.ref .. " " .. decl.id .. ";\n")
+    else
+      table.insert(result, format(decl.decl, decl.id) .. ";\n")
+    end
     -- That's one janky-ass workaround to the lack of continue keyword (requires LuaJIT/Lua 5.2)...
     ::continue::
   end
