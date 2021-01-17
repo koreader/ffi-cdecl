@@ -29,10 +29,18 @@ index 0000000..1bd5698
 +cdecl_type(ssize_t)
 +
 diff --git a/ffi-cdecl/ffi-cdecl.h b/ffi-cdecl/ffi-cdecl.h
-index 7cf25d8..288b930 100644
+index 7cf25d8..4eb2ed5 100644
 --- a/ffi-cdecl/ffi-cdecl.h
 +++ b/ffi-cdecl/ffi-cdecl.h
-@@ -10,4 +10,7 @@
+@@ -2,6 +2,7 @@
+ #define FFI_CDECL_H
+ 
+ #define cdecl_type(id)                  void cdecl_type__ ## id(id *unused) {}
++#define cdecl_c99_type(id, c99)         void cdecl_c99_type__ ## id ## __c99__ ## c99(id *unused) {}
+ #define cdecl_memb(id)                  void cdecl_memb__ ## id(id *unused) {}
+ #define cdecl_struct(tag)               void cdecl_struct__ ## tag(struct tag *unused) {}
+ #define cdecl_union(tag)                void cdecl_union__ ## tag(union tag *unused) {}
+@@ -10,4 +11,7 @@
  #define cdecl_var                       cdecl_func
  #define cdecl_const                     cdecl_func
  
@@ -40,3 +48,30 @@ index 7cf25d8..288b930 100644
 +#include "C99.c"
 +
  #endif
+diff --git a/ffi-cdecl/ffi-cdecl.lua b/ffi-cdecl/ffi-cdecl.lua
+index bb0c1fe..54aadc2 100644
+--- a/ffi-cdecl/ffi-cdecl.lua
++++ b/ffi-cdecl/ffi-cdecl.lua
+@@ -46,15 +46,21 @@ local macro = {
+ macro.struct = macro.memb
+ macro.union = macro.memb
+ macro.enum = macro.memb
++macro.c99_type = macro.type
+ 
+ -- Parse C declaration from capture macro.
+ function _M.parse(node)
+   local name = node:name()
+   if not name then return end
+   local op, id = name:value():match("^cdecl_(.-)__(.+)")
++  -- Handle the crap c99_type workaround
++  local ref
++  if op == "c99_type" then
++    id, ref = id:match("^(.-)__c99__(.+)")
++  end
+   if not op then return end
+   local decl = macro[op](node)
+-  return decl, id
++  return decl, id, ref
+ end
+ 
+ return _M
