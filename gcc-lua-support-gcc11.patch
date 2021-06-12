@@ -1,0 +1,24 @@
+diff --git a/gcc/gcclua.c b/gcc/gcclua.c
+index fd1445f..4603ea4 100644
+--- a/gcc/gcclua.c
++++ b/gcc/gcclua.c
+@@ -63,6 +63,10 @@ extern "C" {
+ #define get_namespace_binding namespace_binding
+ #endif
+ 
++#if GCCPLUGIN_VERSION < 11000
++#define DECL_IS_UNDECLARED_BUILTIN DECL_IS_BUILTIN
++#endif
++
+ /* http://www.gnu.org/licenses/license-list.html#GPLCompatibleLicenses */
+ int plugin_is_GPL_compatible;
+ 
+@@ -422,7 +426,7 @@ static int gcclua_tree_get_decl_source_location(lua_State *L)
+   const tree *t;
+   luaL_checktype(L, 1, LUA_TUSERDATA);
+   t = (const tree *)lua_touserdata(L, 1);
+-  if (DECL_IS_BUILTIN(*t)) {
++  if (DECL_IS_UNDECLARED_BUILTIN(*t)) {
+     return 0;
+   }
+   lua_pushstring(L, DECL_SOURCE_FILE(*t));

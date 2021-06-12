@@ -31,6 +31,7 @@ all: | patch $(PLUGINLIB)
 
 patch:
 	patch -d gcc-lua -p1 < gcc-lua-prefer-luajit.patch
+	patch -d gcc-lua -p1 < gcc-lua-support-gcc11.patch
 	patch -d gcc-lua-cdecl -p1 < gcc-lua-cdecl-do-not-mangle-c99-types.patch
 
 unpatch:
