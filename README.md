@@ -3,8 +3,7 @@ ffi-cdecl
 
 Automated C declarations extraction tool for FFI interfaces.
 
-Currently it only generates lua header files for LuaJIT FFI. That said, it
-should be easy to add python cffi support.
+Currently it generates lua header files for LuaJIT FFI, And python header files for cffi.
 
 
 Dependencies
@@ -50,6 +49,10 @@ See `test/` directory and [koreader-base][] for examples.
 
 When you have the C file ready, run `ffi-cdecl gcc file.c output.lua` or
 `ffi-cdecl g++ file.cpp output.lua` to generate a Lua file containing a
+`ffi.cdef` declaring the desired functions, structs, etc.
+
+For python cffi, run `ffi-cdecl gcc file.c output.py` or
+`ffi-cdecl g++ file.cpp output.py` to generate a Python file containing a
 `ffi.cdef` declaring the desired functions, structs, etc.
 
 When using a cross compiler, you need to replace `gcc` and `g++`
