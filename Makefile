@@ -11,10 +11,7 @@ CROSSCXX ?= $(CHOST)-g++
 CROSS_DIR ?= $(dir $(shell $(CROSSCC) -print-libgcc-file-name))
 GCCPLUGIN_DIR ?= $(shell find $(CROSS_DIR) -name gcc-plugin.h | head -n 1 | xargs dirname)
 
-# Workaround for gcc<4.8 on arm (see http://gcc.gnu.org/PR45078)
-FIX_CPPFLAGS ?= -I$(CURDIR)/include
-
-PLUGIN_CPPFLAGS = $(CPPFLAGS) -I$(GCCPLUGIN_DIR) $(FIX_CPPFLAGS)
+PLUGIN_CPPFLAGS = $(CPPFLAGS) -I$(GCCPLUGIN_DIR)
 
 PLUGIN = gcc-lua/gcc/gcclua
 PLUGINLIB = $(PLUGIN).so
