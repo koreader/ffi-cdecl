@@ -29,16 +29,25 @@ PLUGINLIB = $(PLUGIN).so
 
 all: | patch $(PLUGINLIB)
 
-patch:
-	patch -d gcc-lua -p1 < gcc-lua-prefer-luajit.patch
-	patch -d gcc-lua -p1 < gcc-lua-support-gcc11.patch
-	patch -d gcc-lua-cdecl -p1 < gcc-lua-cdecl-do-not-mangle-c99-types.patch
+patch: .patched
+
+APPLY_PATCH = patch --batch --forward -p1 -d $1 -i $(abspath $2)
+UNPATCH = git -C $1 reset --hard && git -C $1 clean -fxdq
+
+.patched:
+	$(call UNPATCH,gcc-lua)
+	$(call UNPATCH,gcc-lua-cdecl)
+	$(call APPLY_PATCH,gcc-lua,gcc-lua-prefer-luajit.patch)
+	$(call APPLY_PATCH,gcc-lua,gcc-lua-support-gcc11.patch)
+	$(call APPLY_PATCH,gcc-lua-cdecl,gcc-lua-cdecl-do-not-mangle-c99-types.patch)
+	touch $@
 
 unpatch:
-	cd gcc-lua && git reset --hard && git clean -fxdq
-	cd gcc-lua-cdecl && git reset --hard && git clean -fxdq
+	$(call UNPATCH,gcc-lua)
+	$(call UNPATCH,gcc-lua-cdecl)
+	rm -f .patched
 
-clean: unpatch
+clean:
 	$(MAKE) -C gcc-lua clean
 
 test: test-ffi-cdecl test-gcc-lua test-gcc-lua-cdecl
