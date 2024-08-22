@@ -8,7 +8,7 @@ CROSSCXX ?= $(CHOST)-g++
 # CROSS_DIR is the main directory of the toolchain,
 # which is only used for trying to autolocate GCCPLUGIN_DIR,
 # that is set to the directory containing gcc-plugin.h
-CROSS_DIR ?= $(shell dirname `$(CROSSCC) -print-libgcc-file-name`)
+CROSS_DIR ?= $(dir $(shell $(CROSSCC) -print-libgcc-file-name))
 GCCPLUGIN_DIR ?= $(shell find $(CROSS_DIR) -name gcc-plugin.h | head -n 1 | xargs dirname)
 
 # Workaround for gcc<4.8 on arm (see http://gcc.gnu.org/PR45078)
