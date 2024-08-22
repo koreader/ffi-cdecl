@@ -1,9 +1,8 @@
 diff --git a/ffi-cdecl/C99.c b/ffi-cdecl/C99.c
 new file mode 100644
-index 0000000..1bd5698
 --- /dev/null
 +++ b/ffi-cdecl/C99.c
-@@ -0,0 +1,24 @@
+@@ -0,0 +1,23 @@
 +#include <stdbool.h>
 +#include <stddef.h>
 +#include <stdint.h>
@@ -27,9 +26,7 @@ index 0000000..1bd5698
 +cdecl_type(uintptr_t)
 +// And we can add ssize_t to the list (c.f., src/lj_ctype.c)
 +cdecl_type(ssize_t)
-+
 diff --git a/ffi-cdecl/ffi-cdecl.h b/ffi-cdecl/ffi-cdecl.h
-index 7cf25d8..4eb2ed5 100644
 --- a/ffi-cdecl/ffi-cdecl.h
 +++ b/ffi-cdecl/ffi-cdecl.h
 @@ -2,6 +2,7 @@
@@ -49,7 +46,6 @@ index 7cf25d8..4eb2ed5 100644
 +
  #endif
 diff --git a/ffi-cdecl/ffi-cdecl.lua b/ffi-cdecl/ffi-cdecl.lua
-index bb0c1fe..54aadc2 100644
 --- a/ffi-cdecl/ffi-cdecl.lua
 +++ b/ffi-cdecl/ffi-cdecl.lua
 @@ -46,15 +46,21 @@ local macro = {
