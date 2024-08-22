@@ -2,8 +2,8 @@
 HOSTCC ?= gcc
 # Toolchain prefix and gcc/g++ executables
 CHOST ?= arm-none-linux-gnueabi
-CROSSCC  ?= $(CHOST)-gcc
-CROSSCXX ?= $(CHOST)-g++
+CROSSCC  ?= $(and $(CHOST),$(CHOST)-)gcc
+CROSSCXX ?= $(and $(CHOST),$(CHOST)-)g++
 
 # CROSS_DIR is the main directory of the toolchain,
 # which is only used for trying to autolocate GCCPLUGIN_DIR,
