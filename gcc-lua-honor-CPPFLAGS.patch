@@ -1,0 +1,13 @@
+diff --git i/gcc/Makefile w/gcc/Makefile
+index 296a24e..5fa9206 100644
+--- i/gcc/Makefile
++++ w/gcc/Makefile
+@@ -11,7 +11,7 @@ CPPFLAGS  =
+ CPPOPT    = -I$(shell $(TARGET_CC) -print-file-name=plugin)/include
+ CFLAGS    = -O2 -Wall -Wformat-security
+ CCOPT     = -fPIC
+-ifneq (,$(findstring GCCLUA_USE_CXX,$(shell $(HOST_CC) -E -dM $(CPPOPT) -xc++ gcclua-config.h)))
++ifneq (,$(findstring GCCLUA_USE_CXX,$(shell $(HOST_CC) -E -dM $(CPPOPT) $(CPPFLAGS) -xc++ gcclua-config.h)))
+   CCOPT  += -xc++
+ endif
+ LDFLAGS   =
