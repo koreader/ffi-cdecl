@@ -79,7 +79,7 @@ gcc.register_callback(gcc.PLUGIN_FINISH_UNIT, function()
     ::continue::
   end
 
-  local f = assert(io.open(arg.output, "w"))
+  local f = arg.output == '-' and io.stdout or assert(io.open(arg.output, "w"))
   if arg.output:match(".*%.(.*)") == "py" then
     f:write([=[
 """
