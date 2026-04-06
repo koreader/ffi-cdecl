@@ -1,5 +1,11 @@
 local script_dir = arg["script"]:gsub("[^/]+$","")
-package.path = script_dir .. "gcc-lua-cdecl/?.lua;" .. package.path
+for _, search_path in ipairs{"gcc-lua-cdecl/?.lua", "?.lua"} do
+    search_path = script_dir .. search_path
+    if package.searchpath("gcc.cdecl", search_path) then
+        package.path = search_path .. ";" .. package.path
+        break
+    end
+end
 
 local gcc = require("gcc")
 local cdecl = require("gcc.cdecl")
