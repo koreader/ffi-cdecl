@@ -1,0 +1,62 @@
+diff --git i/gcc/cdecl.lua w/gcc/cdecl.lua
+index ed9e664..a96f284 100644
+--- i/gcc/cdecl.lua
++++ w/gcc/cdecl.lua
+@@ -14,30 +14,49 @@ local concat, insert, remove = table.concat, table.insert, table.remove
+ -- Forward declaration.
+ local format_node_class
+ 
++local luajit_ffi_supported_attributes = {
++    aligned     = true,
++    cdecl       = true,
++    fastcall    = true,
++    mode        = true,
++    packed      = true,
++    stdcall     = true,
++    thiscall    = true,
++    vector_size = true,
++}
++
+ -- GCC C extension: Format declaration or type attributes.
+ local function format_attributes(node, result, last)
+   local attr = node:attributes()
+   if attr and attr ~= last then
+-    local pos = #result + 1
++    local partial = {}
+     while true do
+-      local partial = {}
+-      insert(partial, attr:purpose():value())
++      local purpose = attr:purpose():value()
+       local value = attr:value()
++      if not luajit_ffi_supported_attributes[purpose] then
++        goto continue
++      end
++      if #partial > 0 then
++        insert(partial, ", ")
++      end
++      insert(partial, purpose)
+       if value then
+-        local value = value:value()
++        value = value:value()
+         insert(partial, "(")
+         if value:code() == "string_cst" then insert(partial, [["]]) end
+         insert(partial, value:value())
+         if value:code() == "string_cst" then insert(partial, [["]]) end
+         insert(partial, ")")
+       end
++      ::continue::
+       attr = attr:chain()
+-      insert(result, pos, concat(partial))
+       if not attr or attr == last then break end
+-      insert(result, pos, ", ")
+     end
+-    insert(result, pos, " __attribute__((")
+-    insert(result, "))")
++    if #partial > 0 then
++      insert(result, " __attribute__((")
++      insert(result, table.concat(partial))
++      insert(result, "))")
++    end
+   end
+ end
+ 
