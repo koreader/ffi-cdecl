@@ -1,0 +1,56 @@
+From 4fa8b89feb64d368ecaf2c9753da1c8d936fbb31 Mon Sep 17 00:00:00 2001
+From: Benoit Pierre <benoit.pierre@gmail.com>
+Date: Mon, 6 Apr 2026 03:53:39 +0200
+Subject: [PATCH] add original_type() for type declarations
+
+
+diff --git a/doc/reference.md b/doc/reference.md
+index 27b81bb..461a57b 100644
+--- a/doc/reference.md
++++ b/doc/reference.md
+@@ -249,6 +249,10 @@ This tree code class is used for declarations.
+ 
+           : Returns **true** if type is accessible outside translation unit, or **false** otherwise.
+ 
++        `node:original_type()`
++
++          : Returns tree node of "original" type (the typedef's base type).
++
+     `var_decl`
+ 
+       : Variable declaration.
+diff --git a/gcc/gcclua.c b/gcc/gcclua.c
+index 1bac531..87efb2e 100644
+--- a/gcc/gcclua.c
++++ b/gcc/gcclua.c
+@@ -452,6 +452,20 @@ static int gcclua_tree_get_decl_user_align(lua_State *L)
+   return 1;
+ }
+ 
++static int gcclua_tree_get_type_decl_original_type(lua_State *L)
++{
++  const tree *t;
++  tree child;
++  luaL_checktype(L, 1, LUA_TUSERDATA);
++  t = (const tree *)lua_touserdata(L, 1);
++  child = DECL_ORIGINAL_TYPE(*t);
++  if (!child) {
++    return 0;
++  }
++  gcclua_tree_new(L, child);
++  return 1;
++}
++
+ static int gcclua_tree_get_identifier(lua_State *L)
+ {
+   const tree *t;
+@@ -1350,7 +1364,8 @@ static const luaL_Reg gcclua_tree_list[] = {
+ };
+ 
+ static const luaL_Reg gcclua_type_decl[] = {
+-  {"public", gcclua_tree_get_public},
++  {"public",        gcclua_tree_get_public},
++  {"original_type", gcclua_tree_get_type_decl_original_type},
+   {NULL, NULL},
+ };
+ 
