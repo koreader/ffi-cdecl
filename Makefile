@@ -29,6 +29,7 @@ UNPATCH = git -C $1 reset --hard && git -C $1 clean -fxdq
 	$(call APPLY_PATCH,gcc-lua,gcc-lua-gcc15.patch)
 	$(call APPLY_PATCH,gcc-lua,gcc-lua-honor-CPPFLAGS.patch)
 	$(call APPLY_PATCH,gcc-lua,gcc-lua-prefer-luajit.patch)
+	$(call APPLY_PATCH,gcc-lua,gcc-lua-type_decl-original_type.patch)
 	$(call APPLY_PATCH,gcc-lua-cdecl,gcc-lua-cdecl-do-not-mangle-c99-types.patch)
 	touch $@
 
