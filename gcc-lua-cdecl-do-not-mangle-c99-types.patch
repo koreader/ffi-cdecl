@@ -2,7 +2,7 @@ diff --git a/ffi-cdecl/C99.c b/ffi-cdecl/C99.c
 new file mode 100644
 --- /dev/null
 +++ b/ffi-cdecl/C99.c
-@@ -0,0 +1,24 @@
+@@ -0,0 +1,23 @@
 +#include <stdbool.h>
 +#include <stddef.h>
 +#include <stdint.h>
@@ -12,32 +12,23 @@ new file mode 100644
 +// Keep types LuaJIT understands as-is
 +// (c.f., https://luajit.org/ext_ffi_semantics.html)
 +cdecl_type(bool)
-+cdecl_type(ptrdiff_t)
-+cdecl_type(size_t)
-+cdecl_type(wchar_t)
 +cdecl_type(int8_t)
 +cdecl_type(int16_t)
 +cdecl_type(int32_t)
 +cdecl_type(int64_t)
++cdecl_type(intptr_t)
++cdecl_type(ptrdiff_t)
++cdecl_type(size_t)
++cdecl_type(ssize_t)
 +cdecl_type(uint8_t)
 +cdecl_type(uint16_t)
 +cdecl_type(uint32_t)
 +cdecl_type(uint64_t)
-+cdecl_type(intptr_t)
 +cdecl_type(uintptr_t)
-+// And we can add ssize_t to the list (c.f., src/lj_ctype.c)
-+cdecl_type(ssize_t)
++cdecl_type(wchar_t)
 diff --git a/ffi-cdecl/ffi-cdecl.h b/ffi-cdecl/ffi-cdecl.h
 --- a/ffi-cdecl/ffi-cdecl.h
 +++ b/ffi-cdecl/ffi-cdecl.h
-@@ -2,6 +2,7 @@
- #define FFI_CDECL_H
- 
- #define cdecl_type(id)                  void cdecl_type__ ## id(id *unused) {}
-+#define cdecl_c99_type(id, c99)         void cdecl_c99_type__ ## id ## __c99__ ## c99(id *unused) {}
- #define cdecl_memb(id)                  void cdecl_memb__ ## id(id *unused) {}
- #define cdecl_struct(tag)               void cdecl_struct__ ## tag(struct tag *unused) {}
- #define cdecl_union(tag)                void cdecl_union__ ## tag(union tag *unused) {}
 @@ -10,4 +11,7 @@
  #define cdecl_var                       cdecl_func
  #define cdecl_const                     cdecl_func
@@ -46,29 +37,3 @@ diff --git a/ffi-cdecl/ffi-cdecl.h b/ffi-cdecl/ffi-cdecl.h
 +#include "C99.c"
 +
  #endif
-diff --git a/ffi-cdecl/ffi-cdecl.lua b/ffi-cdecl/ffi-cdecl.lua
---- a/ffi-cdecl/ffi-cdecl.lua
-+++ b/ffi-cdecl/ffi-cdecl.lua
-@@ -46,15 +46,21 @@ local macro = {
- macro.struct = macro.memb
- macro.union = macro.memb
- macro.enum = macro.memb
-+macro.c99_type = macro.type
- 
- -- Parse C declaration from capture macro.
- function _M.parse(node)
-   local name = node:name()
-   if not name then return end
-   local op, id = name:value():match("^cdecl_(.-)__(.+)")
-+  -- Handle the crap c99_type workaround
-+  local ref
-+  if op == "c99_type" then
-+    id, ref = id:match("^(.-)__c99__(.+)")
-+  end
-   if not op then return end
-   local decl = macro[op](node)
--  return decl, id
-+  return decl, id, ref
- end
- 
- return _M

@@ -21,30 +21,25 @@ local types = {}
 
 -- Parse C declaration from capture macro.
 gcc.register_callback(gcc.PLUGIN_PRE_GENERICIZE, function(node)
-  local decl, id, ref = fficdecl.parse(node)
+  local decl, id = fficdecl.parse(node)
   if decl then
     if decl:class() == "type" or decl:code() == "type_decl" then
       types[decl] = id
     end
-    table.insert(decls, {decl = decl, id = id, ref = ref})
+    table.insert(decls, {decl = decl, id = id})
   end
 end)
 
 -- Formats the given declaration as a string of C code.
-local function format(decl, id, ref)
+local function format(decl, id)
   if decl:class() == "constant" then
     return "static const int " .. id .. " = " .. decl:value()
   end
-  if decl:class() == "declaration" and ref then
-    -- If we have an original typedef ref, use it instead of letting GCC resolve it to a canonical type (cdecl_c99_type hack)...
-    -- That's always a typedef, so, just format it like the original and call it a day.
-    -- The callback has already run, so the actual new name made it to the types map, meaning we'll use it in function calls & co.
-    return "typedef " .. ref .. " " .. id
+  -- For integer typedefs, we want to keep the original base type (not the GCC resolved one).
+  if decl:class() == "declaration" and decl:code() == "type_decl" and decl:type():code() == "integer_type" then
+      return "typedef " .. decl:original_type():name():name():value() .. " " .. id
   end
-  return cdecl.declare(decl, function(node)
-    if node == decl then return id end
-    return types[node]
-  end)
+  return cdecl.declare(decl, function(node) return types[node] end)
 end
 
 -- Output captured C declarations to Lua file.
@@ -57,24 +52,24 @@ gcc.register_callback(gcc.PLUGIN_FINISH_UNIT, function()
     -- NOTE: To check for suspicious type conversions, with an x86_64 compiler,
     --       do a second run w/ -m32 in CPPFLAGS.
     if decl.id == "bool"
-    or decl.id == "ptrdiff_t"
-    or decl.id == "size_t"
-    or decl.id == "wchar_t"
     or decl.id == "int8_t"
     or decl.id == "int16_t"
     or decl.id == "int32_t"
     or decl.id == "int64_t"
+    or decl.id == "intptr_t"
+    or decl.id == "ptrdiff_t"
+    or decl.id == "size_t"
+    or decl.id == "ssize_t"
     or decl.id == "uint8_t"
     or decl.id == "uint16_t"
     or decl.id == "uint32_t"
     or decl.id == "uint64_t"
-    or decl.id == "intptr_t"
     or decl.id == "uintptr_t"
-    or decl.id == "ssize_t"
+    or decl.id == "wchar_t"
     then
         goto continue
     end
-    table.insert(result, format(decl.decl, decl.id, decl.ref) .. ";\n")
+    table.insert(result, format(decl.decl, decl.id) .. ";\n")
     -- That's one janky-ass workaround to the lack of continue keyword (requires LuaJIT/Lua 5.2)...
     ::continue::
   end
